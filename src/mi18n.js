@@ -61,7 +61,8 @@ export class I18N {
   addLanguage(locale, lang = {}) {
     lang = typeof lang === 'string' ? I18N.processFile(lang) : lang
     this.applyLanguage(locale, lang)
-    this.config.langs.push('locale')
+    this.loaded.push(locale)
+    this.config.langs.push(locale)
   }
 
   /**
@@ -229,7 +230,10 @@ export class I18N {
    * @return {Promise} language
    */
   async setCurrent(locale = 'en-US') {
-    await this.loadLang(locale)
+    if (!this.loaded.includes(locale)) {
+      await this.loadLang(locale)
+    }
+
     this.locale = locale
     this.current = this.langs[locale]
 
