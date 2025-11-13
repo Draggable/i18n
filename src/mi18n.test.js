@@ -218,7 +218,7 @@ describe('I18N', () => {
           'pre-LOAD': { preKey: 'Preloaded Value' },
         },
       })
-      // Override takes precedence, so only override langs are used
+      // When override is provided, preloaded is not used
       assert.ok(i18n.langs['test-OVERRIDE'])
       assert.strictEqual(i18n.langs['test-OVERRIDE'].overrideKey, 'Override Value')
     })
