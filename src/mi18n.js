@@ -192,10 +192,8 @@ export class I18N {
   async loadLang(locale, useCache = true) {
     // Return cached language if already loaded
     if (this.loaded.includes(locale) && useCache) {
-      this.applyLanguage(this.langs[locale])
       return this.langs[locale]
     }
-
     // Fetch and process language file
     const langFile = `${this.config.location}${locale}${this.config.extension}`
 
