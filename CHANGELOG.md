@@ -1,3 +1,10 @@
+## [1.0.8](https://github.com/Draggable/i18n/compare/v1.0.7...v1.0.8) (2025-11-13)
+
+
+### Bug Fixes
+
+* setCurrent ([#24](https://github.com/Draggable/i18n/issues/24)) ([c44a4df](https://github.com/Draggable/i18n/commit/c44a4df8da82f69bf219b11b3c199954496cfd9f))
+
 ## [1.0.7](https://github.com/Draggable/i18n/compare/v1.0.6...v1.0.7) (2024-10-30)
 
 
