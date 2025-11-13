@@ -32,7 +32,8 @@ export class I18N {
    */
   processConfig(options) {
     const { location, ...restOptions } = { ...DEFAULT_CONFIG, ...options }
-    const parsedLocation = location.replace(/\/?$/, '/')
+    // Ensure location ends with a slash
+    const parsedLocation = location.endsWith('/') ? location : `${location}/`
     this.config = { location: parsedLocation, ...restOptions }
     const { override, preloaded = {} } = this.config
     const allLangs = Object.entries(this.langs).concat(Object.entries(override || preloaded))
@@ -93,14 +94,14 @@ export class I18N {
    */
   makeSafe(str) {
     const mapObj = {
-      '{': '\\{',
-      '}': '\\}',
-      '|': '\\|',
+      '{': String.raw`\{`,
+      '}': String.raw`\}`,
+      '|': String.raw`\|`,
     }
 
-    str = str.replace(/[{}|]/g, matched => mapObj[matched])
+    const escapedStr = str.replaceAll(/[{}|]/g, matched => mapObj[matched])
 
-    return new RegExp(str, 'g')
+    return new RegExp(escapedStr, 'g')
   }
 
   /**
@@ -122,23 +123,32 @@ export class I18N {
    * @return {String}      updated string translation
    */
   get(key, args) {
-    const _this = this
     let value = this.getValue(key)
     if (!value) {
       return
     }
 
+    // No replacement needed if no args provided
+    if (!args) {
+      return value
+    }
+
     const tokens = value.match(/\{[^}]+?\}/g)
 
-    if (args && tokens) {
-      if ('object' === typeof args) {
-        for (const token of tokens) {
-          const key = token.substring(1, token.length - 1)
-          value = value.replace(_this.makeSafe(token), args[key] || '')
-        }
-      } else {
-        value = value.replace(/\{[^}]+?\}/g, args)
+    // No tokens to replace
+    if (!tokens) {
+      return value
+    }
+
+    // Object args: replace each token with corresponding key
+    if (typeof args === 'object') {
+      for (const token of tokens) {
+        const tokenKey = token.slice(1, -1)
+        value = value.replace(this.makeSafe(token), args[tokenKey] ?? '')
       }
+    } else {
+      // Primitive args: replace all tokens with same value
+      value = value.replaceAll(/\{[^}]+?\}/g, args)
     }
 
     return value
@@ -150,7 +160,7 @@ export class I18N {
    * @return {Object} processed language
    */
   static processFile(response) {
-    return I18N.fromFile(response.replace(/\n\n/g, '\n'))
+    return I18N.fromFile(response.replaceAll('\n\n', '\n'))
   }
 
   /**
@@ -166,7 +176,7 @@ export class I18N {
       const regex = /^(.+?) *?= *?([^\n]+)/
       matches = regex.exec(lines[i])
       if (matches) {
-        lang[matches[1]] = matches[2].replace(/(^\s+|\s+$)/g, '')
+        lang[matches[1]] = matches[2].trim()
       }
     }
 
@@ -179,28 +189,26 @@ export class I18N {
    * @param  {Boolean} useCache
    * @return {Promise}       resolves response
    */
-  loadLang(locale, useCache = true) {
-    const _this = this
-    return new Promise(function (resolve, reject) {
-      if (_this.loaded.indexOf(locale) !== -1 && useCache) {
-        _this.applyLanguage(_this.langs[locale])
-        return resolve(_this.langs[locale])
-      } else {
-        const langFile = [_this.config.location, locale, _this.config.extension].join('')
-        return fetchData(langFile)
-          .then(lang => {
-            const processedFile = I18N.processFile(lang)
-            _this.applyLanguage(locale, processedFile)
-            _this.loaded.push(locale)
-            return resolve(_this.langs[locale])
-          })
-          .catch(err => {
-            console.error(err)
-            const lang = _this.applyLanguage(locale)
-            resolve(lang)
-          })
-      }
-    })
+  async loadLang(locale, useCache = true) {
+    // Return cached language if already loaded
+    if (this.loaded.includes(locale) && useCache) {
+      this.applyLanguage(this.langs[locale])
+      return this.langs[locale]
+    }
+
+    // Fetch and process language file
+    const langFile = `${this.config.location}${locale}${this.config.extension}`
+
+    try {
+      const lang = await fetchData(langFile)
+      const processedFile = I18N.processFile(lang)
+      this.applyLanguage(locale, processedFile)
+      this.loaded.push(locale)
+      return this.langs[locale]
+    } catch (err) {
+      console.error(err)
+      return this.applyLanguage(locale)
+    }
   }
 
   /**
