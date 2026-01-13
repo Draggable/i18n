@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/Draggable/i18n/compare/v1.0.8...v1.1.0) (2026-01-13)
+
+
+### Features
+
+* use singleton ([4ccbbf9](https://github.com/Draggable/i18n/commit/4ccbbf936cca1965a593891d1f30077633b5ea6c))
+
 ## [1.0.8](https://github.com/Draggable/i18n/compare/v1.0.7...v1.0.8) (2025-11-13)
 
 
