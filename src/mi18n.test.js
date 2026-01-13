@@ -1,4 +1,4 @@
-import assert from 'assert'
+import assert from 'node:assert'
 import { describe, test } from 'node:test'
 import mi18n, { I18N } from './mi18n.js'
 
@@ -6,7 +6,7 @@ describe('I18N', () => {
   const locale = 'te-ST'
   const testOpts = {
     locale,
-    override: {
+    preloaded: {
       'te-ST': {
         testKey: 'Teeesst',
         testVars: 'I saw {count} {animals}',
@@ -122,8 +122,10 @@ describe('I18N', () => {
 
       test('getValue should return fallback when locale missing', () => {
         const i18n = new I18N({
-          override: {
+          preloaded: {
             'en-US': { fallbackKey: 'Fallback Value' },
+          },
+          override: {
             'fr-FR': {},
           },
         })
@@ -212,15 +214,15 @@ describe('I18N', () => {
     test('should handle override taking precedence over preloaded', () => {
       const i18n = new I18N({
         override: {
-          'test-OVERRIDE': { overrideKey: 'Override Value' },
+          'en-US': { key: 'Override Value' },
         },
         preloaded: {
-          'pre-LOAD': { preKey: 'Preloaded Value' },
+          'en-US': { key: 'Preloaded Value' },
         },
       })
       // When override is provided, preloaded is not used
-      assert.ok(i18n.langs['test-OVERRIDE'])
-      assert.strictEqual(i18n.langs['test-OVERRIDE'].overrideKey, 'Override Value')
+      assert.ok(i18n.langs['en-US'])
+      assert.strictEqual(i18n.langs['en-US'].key, 'Override Value')
     })
 
     test('should use first lang when locale not specified', () => {
@@ -235,7 +237,7 @@ describe('I18N', () => {
   describe('setCurrent', () => {
     test('should set locale to already loaded language', async () => {
       const i18n = new I18N({
-        override: {
+        preloaded: {
           'en-US': { test: 'value' },
         },
       })

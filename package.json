@@ -13,7 +13,8 @@
   "scripts": {
     "test": "node --test src/**/*.test.js",
     "test:watch": "yarn test -- --reporter min --watch",
-    "lint": "eslint ./src --ext .js || true",
+    "lint": "biome lint ./src",
+    "lint:fix": "biome format ./src --write",
     "start": "webpack-dev-server --mode development",
     "semantic-release": "semantic-release",
     "dev": "vite",

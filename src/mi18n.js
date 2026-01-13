@@ -10,12 +10,15 @@ const DEFAULT_CONFIG = {
   override: {},
 }
 
+// Singleton instance holder
+let instance = null
+
 /**
  * Main i18n class
- * @class I18N
+ * @class I18NBase
  * @classdesc methods and data store for i18n
  */
-export class I18N {
+class I18NBase {
   /**
    * Process options and start the module
    * @param {Object} options
@@ -35,12 +38,23 @@ export class I18N {
     // Ensure location ends with a slash
     const parsedLocation = location.endsWith('/') ? location : `${location}/`
     this.config = { location: parsedLocation, ...restOptions }
-    const { override, preloaded = {} } = this.config
-    const allLangs = Object.entries(this.langs).concat(Object.entries(override || preloaded))
-    this.langs = allLangs.reduce((acc, [locale, lang]) => {
-      acc[locale] = this.applyLanguage(locale, lang)
-      return acc
-    }, {})
+
+    const { preloaded = {}, override = {} } = this.config
+
+    // Merge locales from both preloaded and override
+    // This supports legacy usage where override defined entire languages
+    const allLocales = new Set([...Object.keys(preloaded), ...Object.keys(override)])
+
+    // Apply languages from both preloaded and override
+    // applyLanguage will merge them properly (existing + preloaded + override)
+    for (const locale of allLocales) {
+      const preloadedLang = preloaded[locale] || {}
+      const overrideLang = override[locale] || {}
+      // Merge preloaded and override for this locale
+      const mergedLang = { ...preloadedLang, ...overrideLang }
+      this.applyLanguage(locale, mergedLang)
+    }
+
     this.locale = this.config.locale || this.config.langs[0]
   }
 
@@ -60,7 +74,7 @@ export class I18N {
    * @param {String|Object} lang
    */
   addLanguage(locale, lang = {}) {
-    lang = typeof lang === 'string' ? I18N.processFile(lang) : lang
+    lang = typeof lang === 'string' ? I18NBase.processFile(lang) : lang
     this.applyLanguage(locale, lang)
     this.loaded.push(locale)
     this.config.langs.push(locale)
@@ -184,6 +198,25 @@ export class I18N {
   }
 
   /**
+   * Get the singleton instance
+   * @param {Object} options
+   * @return {I18NBase} singleton instance
+   */
+  static getInstance(options) {
+    if (!instance) {
+      instance = new I18NBase(options)
+    }
+    return instance
+  }
+
+  /**
+   * Reset the singleton instance (useful for testing)
+   */
+  static resetInstance() {
+    instance = null
+  }
+
+  /**
    * Load a remotely stored language file
    * @param  {String} locale
    * @param  {Boolean} useCache
@@ -199,9 +232,8 @@ export class I18N {
 
     try {
       const lang = await fetchData(langFile)
-      const processedFile = I18N.processFile(lang)
+      const processedFile = I18NBase.processFile(lang)
       this.applyLanguage(locale, processedFile)
-      this.loaded.push(locale)
       return this.langs[locale]
     } catch (err) {
       console.error(err)
@@ -219,6 +251,7 @@ export class I18N {
     const override = this.config.override[locale] || {}
     const existingLang = this.langs[locale] || {}
     this.langs[locale] = { ...existingLang, ...lang, ...override }
+    this.loaded.push(locale)
     return this.langs[locale]
   }
 
@@ -247,4 +280,34 @@ export class I18N {
   }
 }
 
-export default new I18N()
+/**
+ * Proxy wrapper that enables singleton pattern:
+ * - I18N() returns the singleton instance
+ * - new I18N() creates a new instance
+ */
+export const I18N = new Proxy(I18NBase, {
+  /**
+   * Called when I18N() is invoked as a function (without new)
+   * Returns the singleton instance
+   */
+  apply(target, thisArg, args) {
+    return target.getInstance(...args)
+  },
+
+  /**
+   * Called when new I18N() is invoked
+   * Creates a new instance
+   */
+  construct(target, args) {
+    return new target(...args)
+  },
+
+  /**
+   * Proxy property access to the base class
+   */
+  get(target, prop) {
+    return target[prop]
+  },
+})
+
+export default I18N.getInstance()
