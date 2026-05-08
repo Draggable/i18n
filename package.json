@@ -51,6 +51,7 @@
     "lefthook": "^1.7.22",
     "lint-staged": "^17.0.3",
     "semantic-release": "^25.0.3",
+    "terser": "^5.47.1",
     "vite": "^8.0.11",
     "vite-plugin-banner": "^0.8.0",
     "vite-plugin-compression": "^0.5.1"
