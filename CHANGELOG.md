@@ -1,3 +1,12 @@
+## [1.1.1](https://github.com/Draggable/i18n/compare/v1.1.0...v1.1.1) (2026-05-08)
+
+
+### Bug Fixes
+
+* manual install terser ([da669c5](https://github.com/Draggable/i18n/commit/da669c5415f8db90f669b018ba4d8b60c1fcf485))
+* outdated dependencies ([97120c2](https://github.com/Draggable/i18n/commit/97120c222fe07b48fe9d668faf243ed33f6d9bfc))
+* publish requires node > v24.10.0 ([77ae55b](https://github.com/Draggable/i18n/commit/77ae55b43f05d48d12c1a5d4cd383285d2703208))
+
 # [1.1.0](https://github.com/Draggable/i18n/compare/v1.0.8...v1.1.0) (2026-01-13)
 
 
