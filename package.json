@@ -56,6 +56,9 @@
     "vite-plugin-banner": "^0.8.0",
     "vite-plugin-compression": "^0.5.1"
   },
+  "overrides": {
+    "npm": "file:./tools/npm-11.21.1-undici-6.29.1.tgz"
+  },
   "lint-staged": {
     "src/**/*.js": [
       "biome lint",
