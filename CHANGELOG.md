@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/Draggable/i18n/compare/v1.1.2...v1.2.0) (2026-10-29)
+
+
+### Features
+
+* TypeScript types, fallback locales, plurals and t() ([#29](https://github.com/Draggable/i18n/issues/29)) ([ee3b44a](https://github.com/Draggable/i18n/commit/ee3b44afcf4d88f8ff99d42d71364061eebbb83d))
+
 ## [1.1.2](https://github.com/Draggable/i18n/compare/v1.1.1...v1.1.2) (2026-10-29)
 
 
