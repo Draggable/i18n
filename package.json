@@ -43,7 +43,7 @@
     "preview": "vite preview"
   },
   "repository": {
-    "url": "https://github.com/Draggable/i18n",
+    "url": "git+https://github.com/Draggable/i18n.git",
     "type": "git"
   },
   "keywords": [
