@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/Draggable/i18n/compare/v1.2.0...v1.2.1) (2026-10-29)
+
+
+### Bug Fixes
+
+* normalize repository url in package.json ([#30](https://github.com/Draggable/i18n/issues/30)) ([271fe6b](https://github.com/Draggable/i18n/commit/271fe6be0ee63588615e9a880c713887438ec25d))
+
 # [1.2.0](https://github.com/Draggable/i18n/compare/v1.1.2...v1.2.0) (2026-10-29)
 
 
