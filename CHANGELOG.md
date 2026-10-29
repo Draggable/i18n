@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/Draggable/i18n/compare/v1.1.1...v1.1.2) (2026-10-29)
+
+
+### Bug Fixes
+
+* patch high and critical transitive dependencies ([#25](https://github.com/Draggable/i18n/issues/25)) ([5b037db](https://github.com/Draggable/i18n/commit/5b037db91c58c381a52ab149277bc68abce14798))
+
 ## [1.1.1](https://github.com/Draggable/i18n/compare/v1.1.0...v1.1.1) (2026-05-08)
 
 
