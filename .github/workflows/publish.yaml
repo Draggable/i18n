@@ -5,6 +5,16 @@ on:
     branches:
       - master
 
+permissions:
+  contents: write # create release commits, tags and GitHub releases
+  issues: write # comment on / open release failure issues
+  pull-requests: write # comment on released pull requests
+  id-token: write # npm trusted publishing (OIDC) and provenance
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build:
     env:
@@ -14,16 +24,17 @@ jobs:
       CI: true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
+          cache: npm
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Test
         run: npm test
       - name: Build
         run: npm run build
       - name: Publish
         if: success()
-        run: npx semantic-release
+        run: npx --no-install semantic-release
