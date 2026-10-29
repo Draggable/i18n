@@ -3,6 +3,23 @@
   "version": "1.1.1",
   "description": "A simple yet robust i18n solution for universal JavaScript apps.",
   "main": "dist/i18n.es.min.js",
+  "module": "dist/i18n.es.min.js",
+  "types": "dist/i18n.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/i18n.d.ts",
+        "default": "./dist/i18n.es.min.js"
+      },
+      "require": {
+        "types": "./dist/i18n.d.cts",
+        "default": "./dist/i18n.cjs"
+      },
+      "default": "./dist/i18n.es.min.js"
+    },
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
   "type": "module",
   "files": [
     "dist/"
@@ -11,14 +28,18 @@
     "access": "public"
   },
   "scripts": {
-    "test": "node --test src/**/*.test.js",
-    "test:watch": "yarn test -- --reporter min --watch",
+    "test": "npm run test:unit && npm run test:types",
+    "test:unit": "node --test src/**/*.test.js",
+    "test:types": "tsc -p test/types/tsconfig.json",
+    "test:dist": "node test/dist.test.js",
+    "test:watch": "node --test --watch src/**/*.test.js",
     "lint": "biome lint ./src",
     "lint:fix": "biome format ./src --write",
     "start": "webpack-dev-server --mode development",
     "semantic-release": "semantic-release",
     "dev": "vite",
     "build": "vite build",
+    "postbuild": "npm run test:dist",
     "preview": "vite preview"
   },
   "repository": {
@@ -52,6 +73,7 @@
     "lint-staged": "^17.0.3",
     "semantic-release": "^25.0.3",
     "terser": "^5.47.1",
+    "typescript": "^5.9.3",
     "vite": "^8.1.6",
     "vite-plugin-banner": "^0.8.0",
     "vite-plugin-compression": "^0.5.1"

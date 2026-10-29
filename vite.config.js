@@ -1,3 +1,4 @@
+import fs from 'fs'
 import path from 'path'
 import { defineConfig } from 'vite'
 import banner from 'vite-plugin-banner'
@@ -13,8 +14,25 @@ Author: ${pkg.author}
 */
 `
 
+/**
+ * Emit extra files next to the existing builds:
+ * - i18n.cjs: the CommonJS build with a .cjs extension so Node parses it as CommonJS ("type": "module")
+ * - i18n.d.ts / i18n.d.cts: type declarations for the ES and CommonJS builds
+ */
+const extraDistFiles = () => ({
+  name: 'extra-dist-files',
+  closeBundle() {
+    const dist = path.resolve(__dirname, 'dist')
+    fs.copyFileSync(path.join(dist, 'i18n.cjs.min.js'), path.join(dist, 'i18n.cjs'))
+    for (const file of ['i18n.d.ts', 'i18n.d.cts']) {
+      fs.copyFileSync(path.resolve(__dirname, 'src/mi18n.d.ts'), path.join(dist, file))
+    }
+  },
+})
+
 export default defineConfig({
   plugins: [
+    extraDistFiles(),
     banner(bannerTemplate),
     compression({
       algorithm: 'gzip',
