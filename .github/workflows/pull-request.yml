@@ -1,17 +1,25 @@
 on: pull_request
 name: Pull Request
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      CI: true
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 23
+          node-version: 24
+          cache: npm
       - name: Install dependencies
-        env:
-          CI: true
-        run: npm install
+        run: npm ci
+      - name: Lint
+        run: npm run lint
       - name: Test
         run: npm test
+      - name: Build
+        run: npm run build
