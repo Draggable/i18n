@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/Draggable/i18n/compare/v1.2.1...v1.2.2) (2026-11-06)
+
+
+### Bug Fixes
+
+* bump nested npm to 11.21.2 ([#31](https://github.com/Draggable/i18n/issues/31)) ([40826c2](https://github.com/Draggable/i18n/commit/40826c2f912732e42915bd1ff5b5e5a53e9744dd))
+
 ## [1.2.1](https://github.com/Draggable/i18n/compare/v1.2.0...v1.2.1) (2026-10-29)
 
 
